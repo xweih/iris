@@ -5,7 +5,18 @@ date: "`r Sys.Date()`"
 output: html_document
 ---
 
+
+# 1   Introduction
+
+The Iris flower data set is a renowned multivariate dataset introduced by the British statistician and biologist Ronald Fisher in 1936 in his paper "The use of multiple measurements in taxonomic problems" as a demonstration of linear discriminant analysis. This dataset is alternatively referred to as Anderson's Iris data set due to Edgar Anderson's role in gathering the data to assess the morphological diversity among three closely related species of Iris flowers. The samples were meticulously collected from two species in the Gaspé Peninsula under uniform conditions to ensure consistency.
+
+Comprising 50 samples from each of the three Iris species (Iris setosa, Iris virginica, and Iris versicolor), the dataset includes measurements of four features - sepal length, sepal width, petal length, and petal width - all recorded in centimeters. Fisher utilized these features to construct a linear discriminant model for species classification. The original publication of Fisher's work appeared in the Annals of Eugenics, now recognized as the Annals of Human Genetics.[[1]](https://en.wikipedia.org/wiki/Iris_flower_data_set)
+
+
 ![ ](images/Three-species-of-IRIS-flower.png)
+
+
+# 2   Preping
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -18,11 +29,17 @@ library(viridis)
 library(GGally)
 ```
 
+## 2.1 Summary of Data
+
 ```{r }
 dados <- read.csv("input/iris/Iris.csv")
 head(dados, 6)
 summary(dados)
 ```
+# 3   Visualization
+
+## 3.1 Attribute histograms
+
 ```{r, echo=TRUE}
 options(repr.plot.width=14, repr.plot.height=10)
 
@@ -53,7 +70,7 @@ petalwidth<-ggplot(data = dados, mapping = aes(x = PetalWidthCm)) +
 plot_grid(sepallength, sepalwidth, petallength, petalwidth, nrow=2, ncol=2)
 ```
 
-## B. Species analysis
+## 3.2 Species Analysis (with ggplot)
 ```{r, echo=TRUE}
 tema2 = theme(plot.title = element_text(size=15, hjust=.5),
              axis.title.x = element_text(size=10, color = "black"),
@@ -96,7 +113,7 @@ petalwidth <- ggplot(data = dados, mapping = aes(x = PetalWidthCm)) +
 plot_grid(sepallength, sepalwidth, petallength, petalwidth, ncol=2, nrow=2)
 ```
 
-## C. Species analysis with Ridgeline
+## 3.3 Species Analysis (with Ridgeline)
 
 ```{r , echo=TRUE}
 tema3 <- theme(plot.title=element_text(size=15, hjust=.5, vjust=1, color="white"),
@@ -146,7 +163,7 @@ petalwidth <- ggplot(data = dados, mapping = aes(x = PetalWidthCm, y = Species))
 plot_grid(sepallength, sepalwidth, petallength, petalwidth, ncol=2, nrow=2)
 ```
 
-## D. Boxplot Views
+## 3.4 Violin Plots
 
 ```{r , echo=TRUE}
 tema4 <- theme(plot.title=element_text(size=15, hjust=.5, vjust=1),
@@ -187,7 +204,7 @@ petalwidth <- ggplot(data = dados, mapping = aes(x=Species, y=PetalWidthCm, fill
 
 plot_grid(sepallength, sepalwidth, petallength, petalwidth, ncol=2, nrow=2)
 ```
-## 
+
 
 ```{r , echo=TRUE}
 tema5 <- theme(plot.title=element_text(size=15, hjust=.5, vjust=1),
@@ -229,7 +246,7 @@ petalwidth <- ggplot(data = dados, aes(x=Species, y=PetalWidthCm, fill=Species))
 plot_grid(sepallength, sepalwidth, petallength, petalwidth, ncol=2, nrow=2)
 ```
 
-## Boxplots
+## 3.5 Boxplots
 
 ```{r , echo=TRUE}
 tema6 <- theme(
@@ -280,7 +297,7 @@ petalwidth <- ggplot(data = dados, aes(x=PetalWidthCm, y=Species, fill=Species))
 plot_grid(sepallength, sepalwidth, petallength, petalwidth, ncol=2, nrow=2)
 ```
 
-## E. Scatter Plots
+## 3.6 Scatter Plots
 
 ```{r , echo=TRUE}
 tema7 <- theme(plot.title=element_text(size=15, hjust=.5, vjust=1),
@@ -349,7 +366,7 @@ ggplot(data = dados) +
   tema9
 ```
 
-## F. Correlation graphs
+## 3.7 Correlation Graphs
 
 ```{r, echo=TRUE}
 df <- select(dados, SepalLengthCm, SepalWidthCm, PetalLengthCm, PetalWidthCm, Species)
@@ -375,11 +392,7 @@ ggpairs(df, columns = 2:4, ggplot2::aes(colour=Species)) +
 
 
 
-## Reference
+# Reference
 
-
-
-
-The exercise displayed in this page is based on the work by MURILÃO: 
-https://www.kaggle.com/code/upadorprofzs/basic-visualization-techniques
+1. The exercise displayed in this page is based on the work by [MURILÃO](https://www.kaggle.com/code/upadorprofzs/basic-visualization-techniques) on Kaggle.
 
