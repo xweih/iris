@@ -1,0 +1,385 @@
+---
+title: "Visualization of Iris Dataset by R"
+author: "Xiaowei Hu"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+![ ](images/Three-species-of-IRIS-flower.png)
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(hrbrthemes)
+library(tidyverse)
+library(ggridges)
+library(ggthemes)
+library(cowplot)
+library(viridis)
+library(GGally)
+```
+
+```{r }
+dados <- read.csv("input/iris/Iris.csv")
+head(dados, 6)
+summary(dados)
+```
+```{r, echo=TRUE}
+options(repr.plot.width=14, repr.plot.height=10)
+
+sepallength<-ggplot(data = dados, mapping = aes(x = SepalLengthCm)) +
+  geom_histogram(bins=30, fill = "red", color = "black", size = 0.5, alpha = .8) +
+  theme_economist() +
+  xlab("Sepal Length") +
+  ggtitle("Sepal Length Histogram") 
+
+sepalwidth<-ggplot(data = dados, mapping = aes(x = SepalWidthCm)) +
+  geom_histogram(bins=30, fill = "#CC79A7", color = "black", size = 0.5, alpha = .8) +
+  theme_economist() +
+  xlab("Sepal Width") +
+  ggtitle("Sepal Width Histogram") 
+
+petallength<-ggplot(data = dados, mapping = aes(x = PetalLengthCm)) +
+  geom_histogram(bins=30, fill = "blue", color = "black", size = 0.5, alpha = .8) +
+  theme_economist() +
+  xlab("Petal Length") +
+  ggtitle("Petal Length Histogram") 
+
+petalwidth<-ggplot(data = dados, mapping = aes(x = PetalWidthCm)) +
+  geom_histogram(bins=30, fill = "#0072B2", color = "black", size = 0.5, alpha = .8) +
+  theme_economist() +
+  xlab("Petal Width") +
+  ggtitle("Petal Width Histogram") 
+
+plot_grid(sepallength, sepalwidth, petallength, petalwidth, nrow=2, ncol=2)
+```
+
+## B. Species analysis
+```{r, echo=TRUE}
+tema2 = theme(plot.title = element_text(size=15, hjust=.5),
+             axis.title.x = element_text(size=10, color = "black"),
+             axis.title.y = element_text(size=10, color = "black"),
+             axis.text.x = element_text(size=10),
+             axis.text.y = element_text(size=10),
+             legend.position="bottom",
+             legend.text = element_text(colour="black", size=10, face="bold"))
+
+options(repr.plot.width=14, repr.plot.height=10)
+
+sepallength <- ggplot(data = dados, mapping = aes(x = SepalLengthCm)) +
+  geom_density(mapping = aes(fill = Species), color = "black", size = 0.6, alpha = .8) +
+  theme_economist() +
+  xlab("Sepal Length") +
+  ggtitle("Sepal Length by Species") +
+  tema2
+
+sepalwidth <- ggplot(data = dados, mapping = aes(x = SepalWidthCm)) +
+  geom_density(mapping = aes(fill = Species), color = "black", size = 0.6, alpha = .8) +
+  theme_economist() +
+  xlab("Sepal Width") +
+  ggtitle("Sepal Width by Species") +
+  tema2
+
+petallength <- ggplot(data = dados, mapping = aes(x = PetalLengthCm)) +
+  geom_density(mapping = aes(fill = Species), color = "black", size = 0.6, alpha = .8) +
+  theme_economist() +
+  xlab("Petal Length") +
+  ggtitle("Petal Length by Species") +
+  tema2
+
+petalwidth <- ggplot(data = dados, mapping = aes(x = PetalWidthCm)) +
+  geom_density(mapping = aes(fill = Species), color = "black", size = 0.6, alpha = .8) +
+  theme_economist() +
+  xlab("Petal Width") +
+  ggtitle("Petal Width by Species") +
+  tema2
+
+plot_grid(sepallength, sepalwidth, petallength, petalwidth, ncol=2, nrow=2)
+```
+
+## C. Species analysis with Ridgeline
+
+```{r , echo=TRUE}
+tema3 <- theme(plot.title=element_text(size=15, hjust=.5, vjust=1, color="white"),
+              axis.title.y=element_text(size=10, vjust=2, color="white"),
+              axis.title.x=element_text(size=10, vjust=-1, color="white"),
+              axis.text.x=element_text(size=10, color="white"),
+              axis.text.y=element_text(size=10, color="white"),
+              legend.position="None")
+
+options(repr.plot.width=17, repr.plot.height=13)
+
+sepallength <- ggplot(data = dados, mapping = aes(x = SepalLengthCm, y = Species)) +
+  geom_density_ridges(mapping = aes(fill = Species), bandwidth=0.181, color = "black", alpha = .8) +
+  theme_solarized(light=FALSE)+
+  scale_colour_solarized('blue')+
+  xlab("Sepal Length") +
+  ggtitle("Sepal Length by Species") +
+  tema3
+
+sepalwidth <- ggplot(data = dados, mapping = aes(x = SepalWidthCm, y = Species)) +
+  geom_density_ridges(mapping = aes(fill = Species), bandwidth=0.134, color = "black", alpha = .8) +
+  theme_economist() +
+  theme_solarized(light=FALSE)+
+  scale_colour_solarized('blue')+
+  xlab("Sepal Width") +
+  ggtitle("Sepal Width by Species") +
+  tema3
+
+petallength <- ggplot(data = dados, mapping = aes(x = PetalLengthCm, y = Species)) +
+  geom_density_ridges(mapping = aes(fill = Species), bandwidth=0.155, color = "black", alpha = .8) +
+  theme_economist() +
+  theme_solarized(light=FALSE)+
+  scale_colour_solarized('blue')+
+  xlab("Petal Length") +
+  ggtitle("Petal Length by Species") +
+  tema3
+
+petalwidth <- ggplot(data = dados, mapping = aes(x = PetalWidthCm, y = Species)) +
+  geom_density_ridges(mapping = aes(fill = Species), bandwidth=0.075, color = "black", alpha = .8) +
+  theme_economist() +
+  theme_solarized(light=FALSE) +
+  scale_colour_solarized('blue') +
+  xlab("Petal Width") +
+  ggtitle("Petal Width by Species") +
+  tema3
+
+plot_grid(sepallength, sepalwidth, petallength, petalwidth, ncol=2, nrow=2)
+```
+
+## D. Boxplot Views
+
+```{r , echo=TRUE}
+tema4 <- theme(plot.title=element_text(size=15, hjust=.5, vjust=1),
+              axis.title.y=element_text(size=12, vjust=2),
+              axis.title.x=element_text(size=12, vjust=-1),
+              axis.text.x=element_text(size=10),
+              axis.text.y=element_text(size=10),
+              legend.position="bottom",
+              legend.text = element_text(colour="black", size=10, face="bold"))
+
+sepallength <- ggplot(data = dados, mapping = aes(x=Species, y=SepalLengthCm, fill=Species)) +
+  geom_violin(size = 0.8) +
+  theme_economist() +
+  scale_fill_viridis(discrete = TRUE, alpha=0.6, option="A") +
+  ggtitle("Sepal Length") +
+  tema4
+
+sepalwidth <- ggplot(data = dados, mapping = aes(x=Species, y=SepalWidthCm, fill=Species)) +
+  geom_violin(size = 0.8) +
+  theme_economist() +
+  scale_fill_viridis(discrete = TRUE, alpha=0.6, option="A") +
+  ggtitle("Sepal Width") +
+  tema4
+
+petallength <- ggplot(data = dados, mapping = aes(x=Species, y=PetalLengthCm, fill=Species)) +
+  geom_violin(size = 0.8) +
+  theme_economist() +
+  scale_fill_viridis(discrete = TRUE, alpha=0.6, option="A") +
+  ggtitle("Petal Length") +
+  tema4
+
+petalwidth <- ggplot(data = dados, mapping = aes(x=Species, y=PetalWidthCm, fill=Species)) +
+  geom_violin(size = 0.8) +
+  theme_economist() +
+  scale_fill_viridis(discrete = TRUE, alpha=0.6, option="A") +
+  ggtitle("Petal Width") +
+  tema4
+
+plot_grid(sepallength, sepalwidth, petallength, petalwidth, ncol=2, nrow=2)
+```
+## 
+
+```{r , echo=TRUE}
+tema5 <- theme(plot.title=element_text(size=15, hjust=.5, vjust=1),
+              axis.title.y=element_text(size=12, vjust=2),
+              axis.title.x=element_text(size=12, vjust=-1),
+              axis.text.x=element_text(size=10),
+              axis.text.y=element_text(size=10),
+              legend.position="bottom",
+              legend.text = element_text(colour="black", size=10, face="bold"))
+
+sepallength <- ggplot(data = dados, aes(x=Species, y=SepalLengthCm, fill=Species)) +
+  geom_violin(size = 0.8) +
+  geom_boxplot(width=0.1, color="white", alpha=0.2, size = 1.2) +
+  theme_economist() +
+  ggtitle("Sepal Length") +
+  tema5
+
+sepalwidth <- ggplot(data = dados, aes(x=Species, y=SepalWidthCm, fill=Species)) +
+  geom_violin(size = 0.8) +
+  geom_boxplot(width=0.1, color="white", alpha=0.2, size = 1.2) +
+  theme_economist() +
+  ggtitle("Sepal Width") +
+  tema5
+
+petallength <- ggplot(data = dados, aes(x=Species, y=PetalLengthCm, fill=Species)) +
+  geom_violin(size = 0.8) +
+  geom_boxplot(width=0.1, color="white", alpha=0.2, size = 1.2) +
+  theme_economist() +
+  ggtitle("Petal Length") +
+  tema5
+
+petalwidth <- ggplot(data = dados, aes(x=Species, y=PetalWidthCm, fill=Species)) +
+  geom_violin(size = 0.8) +
+  geom_boxplot(width=0.1, color="white", alpha=0.2, size = 1.2) +
+  theme_economist() +
+  ggtitle("Petal Width") +
+  tema5
+
+plot_grid(sepallength, sepalwidth, petallength, petalwidth, ncol=2, nrow=2)
+```
+
+## Boxplots
+
+```{r , echo=TRUE}
+tema6 <- theme(
+  plot.title=element_text(size=15, hjust=.5, vjust=1),
+  axis.title.y=element_text(size=12, vjust=2),
+  axis.title.x=element_text(size=12, vjust=-1),
+  axis.text.x=element_text(size=10),
+  axis.text.y=element_text(size=10),
+  legend.position="bottom",
+  legend.text = element_text(colour="black", size=10, face="bold"))
+
+sepallength <- ggplot(data = dados, aes(x=SepalLengthCm, y=Species, fill=Species)) +
+  geom_boxplot(size = 0.8) +
+  stat_boxplot(geom="errorbar")+
+  scale_fill_viridis(discrete = TRUE, alpha=0.6) +
+  geom_jitter(color="black", size=0.4, alpha=0.9) +
+  theme_fivethirtyeight() +
+  ggtitle("Sepal Length") +
+  tema6
+
+sepalwidth <- ggplot(data = dados, aes(x=SepalWidthCm, y=Species, fill=Species)) +
+  geom_boxplot(size = 1.3) +
+  stat_boxplot(geom="errorbar")+
+  scale_fill_viridis(discrete = TRUE, alpha=0.6) +
+  geom_jitter(color="black", size=0.4, alpha=0.9) +
+  theme_fivethirtyeight() +
+  ggtitle("Sepal Width") +
+  tema6
+
+petallength <- ggplot(data = dados, aes(x=PetalLengthCm, y=Species, fill=Species)) +
+  geom_boxplot(size = 1.3) +
+  stat_boxplot(geom="errorbar")+
+  scale_fill_viridis(discrete = TRUE, alpha=0.6) +
+  geom_jitter(color="black", size=0.4, alpha=0.9) +
+  theme_fivethirtyeight() +
+  ggtitle("Petal Length") +
+  tema6
+
+petalwidth <- ggplot(data = dados, aes(x=PetalWidthCm, y=Species, fill=Species)) +
+  geom_boxplot(size = 1.3) +
+  stat_boxplot(geom="errorbar")+
+  scale_fill_viridis(discrete = TRUE, alpha=0.6) +
+  geom_jitter(color="black", size=0.4, alpha=0.9) +
+  theme_fivethirtyeight() +
+  ggtitle("Petal Width") +
+  tema6
+
+plot_grid(sepallength, sepalwidth, petallength, petalwidth, ncol=2, nrow=2)
+```
+
+## E. Scatter Plots
+
+```{r , echo=TRUE}
+tema7 <- theme(plot.title=element_text(size=15, hjust=.5, vjust=1),
+              axis.title.y=element_text(size=12, vjust=2),
+              axis.title.x=element_text(size=12, vjust=-1),
+              axis.text.x=element_text(size=10),
+              axis.text.y=element_text(size=10),
+              legend.position="bottom",
+              legend.text = element_text(colour="black", size=10, face="bold"))
+
+options(repr.plot.width=17, repr.plot.height=7)
+
+a<-ggplot(data = dados, mapping = aes(x = SepalLengthCm, y = SepalWidthCm)) +
+  geom_point(mapping = aes(color = Species, shape = Species), size = 5) +
+  theme_economist() +
+  tema7
+
+b<-ggplot(data = dados, mapping = aes(x = PetalLengthCm, y = PetalWidthCm)) +
+  geom_point(mapping = aes(color = Species, shape = Species), size = 5) +
+  theme_economist() +
+  tema7
+
+plot_grid(a, b, ncol=2, nrow=1)
+```
+
+## 
+
+```{r , echo=TRUE}
+tema8 <- theme(plot.title=element_text(size=15, hjust=.5, vjust=1),
+              axis.title.y=element_text(size=12, vjust=2),
+              axis.title.x=element_text(size=12, vjust=-1),
+              axis.text.x=element_text(size=10),
+              axis.text.y=element_text(size=10),
+              legend.position="bottom",
+              strip.text.x=element_text(size=22, color="black"),
+              legend.text = element_text(colour="black", size=15, face="bold"))
+
+options(repr.plot.width=14, repr.plot.height=7)
+
+ggplot(data = dados) +
+  geom_point(mapping = aes(x = SepalLengthCm, y = SepalWidthCm, color=Species, shape=Species), 
+             size = 4.5) +
+  facet_wrap(~ Species, ncol=3) +
+  theme_economist() +
+  tema8
+```
+
+##
+
+```{r , echo=TRUE}
+tema9 <- theme(plot.title=element_text(size=15, hjust=.5, vjust=1),
+              axis.title.y=element_text(size=12, vjust=2),
+              axis.title.x=element_text(size=12, vjust=-1),
+              axis.text.x=element_text(size=10),
+              axis.text.y=element_text(size=10),
+              legend.position="bottom",
+              strip.text.x=element_text(size=22, color="black"),
+              legend.text = element_text(colour="black", size=15, face="bold"))
+
+options(repr.plot.width=14, repr.plot.height=7)
+
+ggplot(data = dados) +
+  geom_point(mapping = aes(x = PetalLengthCm, y = PetalWidthCm, color=Species, shape=Species), size = 4.5) +
+  facet_wrap(~ Species, ncol=3) +
+  theme_economist() +
+  tema9
+```
+
+## F. Correlation graphs
+
+```{r, echo=TRUE}
+df <- select(dados, SepalLengthCm, SepalWidthCm, PetalLengthCm, PetalWidthCm, Species)
+
+ggcorr(df)
+
+tema10 <- theme(plot.title=element_text(size=15, hjust=.5, vjust=1),
+              axis.title.y=element_text(size=10, vjust=2),
+              axis.title.x=element_text(size=5, vjust=-1),
+              axis.text.x=element_text(size=10),
+              axis.text.y=element_text(size=10),
+              legend.position="none",
+              strip.text.x=element_text(size=15, color="black"),
+              strip.text.y=element_text(size=15, color="black"),
+              legend.text = element_text(colour="black", size=12, face="bold"))
+
+options(repr.plot.width=10, repr.plot.height=9)
+
+ggpairs(df, columns = 2:4, ggplot2::aes(colour=Species)) +
+  theme_economist() +
+  tema10
+```
+
+
+
+## Reference
+
+
+
+
+The exercise displayed in this page is based on the work by MURILÃO: 
+https://www.kaggle.com/code/upadorprofzs/basic-visualization-techniques
+
